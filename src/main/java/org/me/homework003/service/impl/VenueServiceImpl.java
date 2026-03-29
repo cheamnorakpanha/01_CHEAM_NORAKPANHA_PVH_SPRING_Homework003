@@ -16,6 +16,9 @@ public class VenueServiceImpl implements VenueService {
 
     @Override
     public List<Venue> getAllVenues(int page, int size) {
-        return venueRepository.getAllVenues(page, size);
+
+        int offset = size * (page - 1);
+
+        return venueRepository.getAllVenues(offset, size);
     }
 }
