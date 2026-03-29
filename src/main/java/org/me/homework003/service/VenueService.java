@@ -1,6 +1,5 @@
 package org.me.homework003.service;
 
-import org.apache.ibatis.annotations.Select;
 import org.me.homework003.model.entity.Venue;
 import org.me.homework003.model.request.VenueRequest;
 
