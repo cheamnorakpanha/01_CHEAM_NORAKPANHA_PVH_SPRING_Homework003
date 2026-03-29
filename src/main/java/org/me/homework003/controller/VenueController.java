@@ -21,7 +21,7 @@ public class VenueController {
 
     @Operation(summary = "Get all venues")
     @GetMapping
-    public ResponseEntity<ApiResponse<List<Venue>>> getAllVenues(@RequestParam(defaultValue = "1") int page, @RequestParam(defaultValue = "5") int size) {
+    public ResponseEntity<ApiResponse<List<Venue>>> getAllVenues(@RequestParam(defaultValue = "1") int page, @RequestParam(defaultValue = "10") int size) {
 
         ApiResponse<List<Venue>> response = ApiResponse.<List<Venue>>builder()
                 .timestamp(Instant.now())
@@ -33,7 +33,7 @@ public class VenueController {
         return ResponseEntity.status(HttpStatus.OK).body(response);
     }
 
-    @Operation(summary = "Get all venues by Id")
+    @Operation(summary = "Get venues by Id")
     @GetMapping("/{venue-id}")
     public ResponseEntity<ApiResponse<List<Venue>>> getAllVenuesById(@PathVariable("venue-id") Long venueId) {
         ApiResponse<List<Venue>> response = ApiResponse.<List<Venue>>builder()

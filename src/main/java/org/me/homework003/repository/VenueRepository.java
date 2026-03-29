@@ -34,9 +34,7 @@ public interface VenueRepository {
 
     @ResultMap("venueMapper")
     @Select("""
-            DELETE FROM venues
-            WHERE venue_id = #{venueId}
-            RETURNING *
+            DELETE FROM venues WHERE venue_id = #{venueId} RETURNING *
             """)
     List<Venue> deleteVenueById(@Param("venueId") Long venueId);
 
