@@ -17,7 +17,8 @@ public class VenueController {
     private final VenueService venueService;
 
     @GetMapping
-    public List<Venue> getAllVenues(@RequestParam(defaultValue = "1") int page, @RequestParam(defaultValue = "5") int size) {
+    public List<Venue> getAllVenues(@RequestParam(defaultValue = "1") int page,
+                                    @RequestParam(defaultValue = "5") int size) {
         return venueService.getAllVenues(page, size);
     }
 }
