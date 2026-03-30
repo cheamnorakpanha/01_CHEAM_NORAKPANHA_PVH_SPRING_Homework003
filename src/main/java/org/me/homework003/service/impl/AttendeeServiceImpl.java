@@ -55,7 +55,7 @@ public class AttendeeServiceImpl implements AttendeeService {
 
     @Override
     public List<Attendee> createNewAttendee(AttendeeRequest request) {
-        validateDuplicateAttendee(request.getAttendeeName(), request.getEmail(), null);
+        validateDuplicateAttendeeName(request.getAttendeeName());
 
         return attendeeRepository.createNewAttendee(request);
     }
@@ -98,35 +98,12 @@ public class AttendeeServiceImpl implements AttendeeService {
         }
     }
 
-    private void validateDuplicateAttendee(String attendeeName, String email, Long attendeeId) {
-        boolean duplicateName;
-        boolean duplicateEmail;
+    private void validateDuplicateAttendeeName(String attendeeName) {
+        boolean exists = attendeeRepository.existsByAttendeeName(attendeeName);
 
-        if (attendeeId == null) {
-            duplicateName = attendeeRepository.existsByAttendeeName(attendeeName);
-            duplicateEmail = attendeeRepository.existsByEmail(email);
-        } else {
-            duplicateName = attendeeRepository.existsByAttendeeNameAndAttendeeIdNot(attendeeName, attendeeId);
-            duplicateEmail = attendeeRepository.existsByEmailAndAttendeeIdNot(email, attendeeId);
-        }
-
-        if (duplicateName && duplicateEmail) {
-            throw new DuplicateResourceException(
-                    "Attendee name and email already exist",
-                    "http://localhost:8080/errors/duplicate-attendee"
-            );
-        }
-
-        if (duplicateName) {
+        if (exists) {
             throw new DuplicateResourceException(
                     "Attendee name already exists",
-                    "http://localhost:8080/errors/duplicate-attendee"
-            );
-        }
-
-        if (duplicateEmail) {
-            throw new DuplicateResourceException(
-                    "Email already exists",
                     "http://localhost:8080/errors/duplicate-attendee"
             );
         }

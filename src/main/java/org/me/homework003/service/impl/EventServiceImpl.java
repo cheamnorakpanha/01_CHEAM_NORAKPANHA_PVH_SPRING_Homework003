@@ -62,7 +62,6 @@ public class EventServiceImpl implements EventService {
     }
 
     @Override
-    @Transactional
     public List<Event> createNewEvent(EventRequest request) {
         validateEventRequest(request);
         validateVenueExists(request.getVenueId());
@@ -93,7 +92,6 @@ public class EventServiceImpl implements EventService {
     }
 
     @Override
-    @Transactional
     public List<Event> updateEventById(Long eventId, EventRequest request) {
         validateEventId(eventId);
         validateEventExists(eventId);
