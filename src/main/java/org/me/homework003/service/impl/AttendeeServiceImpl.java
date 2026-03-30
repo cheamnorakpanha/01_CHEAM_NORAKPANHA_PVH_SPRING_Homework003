@@ -1,6 +1,8 @@
 package org.me.homework003.service.impl;
 
 import lombok.RequiredArgsConstructor;
+import org.me.homework003.exception.InvalidPaginationException;
+import org.me.homework003.exception.InvalidResourceIdException;
 import org.me.homework003.exception.NotFoundException;
 import org.me.homework003.model.entity.Attendee;
 import org.me.homework003.model.request.AttendeeRequest;
@@ -8,7 +10,9 @@ import org.me.homework003.repository.AttendeeRepository;
 import org.me.homework003.service.AttendeeService;
 import org.springframework.stereotype.Service;
 
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 @Service
 @RequiredArgsConstructor
@@ -17,6 +21,20 @@ public class AttendeeServiceImpl implements AttendeeService {
 
     @Override
     public List<Attendee> getAllAttendees(int page, int size) {
+        Map<String, String> errors = new HashMap<>();
+
+        if (page <= 0) {
+            errors.put("page", "must be greater than 0");
+        }
+
+        if (size <= 0) {
+            errors.put("size", "must be greater than 0");
+        }
+
+        if (!errors.isEmpty()) {
+            throw new InvalidPaginationException(errors);
+        }
+
         int offset = size * (page - 1);
 
         return attendeeRepository.getAllAttendees(offset, size);
@@ -24,6 +42,8 @@ public class AttendeeServiceImpl implements AttendeeService {
 
     @Override
     public List<Attendee> getAllAttendeesById(Long attendeeId) {
+        validateAttendeeId(attendeeId);
+
         List<Attendee> attendee = attendeeRepository.getAllAttendeesById(attendeeId);
 
         if (attendee.isEmpty()) {
@@ -39,6 +59,8 @@ public class AttendeeServiceImpl implements AttendeeService {
 
     @Override
     public List<Attendee> deleteAttendeeById(Long attendeeId) {
+        validateAttendeeId(attendeeId);
+
         List<Attendee> deleted = attendeeRepository.deleteAttendeeById(attendeeId);
 
         if (deleted.isEmpty()) {
@@ -49,11 +71,19 @@ public class AttendeeServiceImpl implements AttendeeService {
 
     @Override
     public List<Attendee> updateAttendeeById(Long attendeeId, AttendeeRequest request) {
+        validateAttendeeId(attendeeId);
+
         List<Attendee> updated = attendeeRepository.updateAttendeeById(attendeeId, request);
 
         if (updated.isEmpty()) {
             throw new NotFoundException("Attendee with id " + attendeeId + " not found.");
         }
         return updated;
+    }
+
+    private void validateAttendeeId(Long attendeeId) {
+        if (attendeeId == null || attendeeId <= 0) {
+            throw new InvalidResourceIdException(Map.of("attendeeId", "must be greater than 0"));
+        }
     }
 }

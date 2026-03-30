@@ -18,6 +18,6 @@ public class ApiResponse <T> {
     private
     Instant timestamp;
     private String message;
-    private HttpStatus status;
+    private String status;
     private T payload;
 }

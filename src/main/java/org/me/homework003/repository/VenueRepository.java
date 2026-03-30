@@ -31,6 +31,18 @@ public interface VenueRepository {
             """)
     Venue getVenueById(@Param("venueId") Long venueId);
 
+    @Select("""
+            SELECT COUNT(*) > 0 FROM venues WHERE venue_name = #{venueName}
+            """)
+    boolean existsByVenueName(@Param("venueName") String venueName);
+
+    @Select("""
+            SELECT COUNT(*) > 0
+            FROM venues
+            WHERE venue_name = #{venueName} AND venue_id != #{venueId}
+            """)
+    boolean existsByVenueNameAndVenueIdNot(@Param("venueName") String venueName, @Param("venueId") Long venueId);
+
     @ResultMap("venueMapper")
     @Select("""
             INSERT INTO venues (venue_name, location)
