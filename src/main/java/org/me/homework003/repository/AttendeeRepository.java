@@ -25,6 +25,30 @@ public interface AttendeeRepository {
             """)
     List<Attendee> getAllAttendeesById(@Param("attendeeId") Long attendeeId);
 
+    @Select("""
+            SELECT COUNT(*) > 0 FROM attendees WHERE email = #{email}
+            """)
+    boolean existsByEmail(@Param("email") String email);
+
+    @Select("""
+            SELECT COUNT(*) > 0 FROM attendees WHERE attendee_name = #{attendeeName}
+            """)
+    boolean existsByAttendeeName(@Param("attendeeName") String attendeeName);
+
+    @Select("""
+            SELECT COUNT(*) > 0
+            FROM attendees
+            WHERE email = #{email} AND attendee_id != #{attendeeId}
+            """)
+    boolean existsByEmailAndAttendeeIdNot(@Param("email") String email, @Param("attendeeId") Long attendeeId);
+
+    @Select("""
+            SELECT COUNT(*) > 0
+            FROM attendees
+            WHERE attendee_name = #{attendeeName} AND attendee_id != #{attendeeId}
+            """)
+    boolean existsByAttendeeNameAndAttendeeIdNot(@Param("attendeeName") String attendeeName, @Param("attendeeId") Long attendeeId);
+
     @ResultMap("attendeeMapper")
     @Select("""
             INSERT INTO attendees (attendee_name, email) VALUES (#{req.attendeeName}, #{req.email}) RETURNING  *

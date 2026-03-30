@@ -18,3 +18,24 @@ VALUES ('Tech Conference 2026', '2026-05-15', 1),
        ('Startup Pitch Day', '2026-04-10', 3),
        ('Art Expo', '2026-07-05', 4),
        ('Health & Wellness Summit', '2026-08-12', 5);
+
+INSERT INTO event_attendee (attendee_id, event_id)
+VALUES (1, 1),
+       (2, 1),
+       (3, 1),
+
+       (2, 2),
+       (4, 2),
+       (5, 2),
+
+       (1, 3),
+       (3, 3),
+       (5, 3),
+
+       (3, 4),
+       (5, 4),
+       (1, 4),
+
+       (4, 5),
+       (2, 5),
+       (1, 5);
