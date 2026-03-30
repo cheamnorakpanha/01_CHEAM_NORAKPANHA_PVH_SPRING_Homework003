@@ -12,6 +12,7 @@ public interface VenueRepository {
     @Results(id = "venueMapper", value = {
             @Result(property = "venueId", column = "venue_id"),
             @Result(property = "venueName", column = "venue_name"),
+            @Result(property = "location", column = "location")
     })
     @Select("""
             SELECT * FROM venues OFFSET #{offset} LIMIT #{size}
@@ -23,6 +24,12 @@ public interface VenueRepository {
             SELECT * FROM venues WHERE venue_id = #{venueId}
             """)
     List<Venue> getAllVenuesById(Long venueId);
+
+    @ResultMap("venueMapper")
+    @Select("""
+            SELECT * FROM venues WHERE venue_id = #{venueId}
+            """)
+    Venue getVenueById(@Param("venueId") Long venueId);
 
     @ResultMap("venueMapper")
     @Select("""
