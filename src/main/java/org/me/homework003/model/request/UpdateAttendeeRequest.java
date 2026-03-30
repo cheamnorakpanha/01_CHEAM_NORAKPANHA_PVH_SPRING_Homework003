@@ -1,7 +1,6 @@
 package org.me.homework003.model.request;
 
 import io.swagger.v3.oas.annotations.media.Schema;
-import jakarta.validation.constraints.NotBlank;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
@@ -9,12 +8,7 @@ import lombok.NoArgsConstructor;
 @Data
 @AllArgsConstructor
 @NoArgsConstructor
-public class AttendeeRequest {
-    @NotBlank(message = "Attendee name cannot be blank")
+public class UpdateAttendeeRequest {
     @Schema(example = "Sok Sao")
     private String attendeeName;
-
-    @NotBlank(message = "Email cannot be blank")
-    @Schema(example = "abc@gmail.com")
-    private String email;
 }

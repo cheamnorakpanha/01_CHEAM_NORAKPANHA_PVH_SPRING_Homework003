@@ -1,12 +1,11 @@
 package org.me.homework003.model.request;
 
+import io.swagger.v3.oas.annotations.media.Schema;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
-import org.me.homework003.model.entity.Attendee;
-import org.me.homework003.model.entity.Venue;
 
 import java.util.List;
 
@@ -15,14 +14,18 @@ import java.util.List;
 @NoArgsConstructor
 public class EventRequest {
     @NotBlank(message = "Event name cannot be blank")
+    @Schema(example = "HRD Party")
     private String eventName;
 
-    @NotBlank(message = "Event date cannot be blank")
+    @NotBlank(message = "Event date cannot be null")
+    @Schema(example = "2026-03-20", description = "Format: yyyy-MM-dd")
     private String eventDate;
 
-    @NotNull(message = "Venue cannot be null")
-    private Venue venue;
+    @NotNull(message = "Venue ID cannot be null")
+    @Schema(example = "1073741824")
+    private Long venueId;
 
-    @NotNull(message = "Attendee list cannot be null")
-    private List<Attendee> attendee;
+    @NotNull(message = "Attendee IDs cannot be null")
+    @Schema(example = "[1073741824]")
+    private List<Long> attendeeIds;
 }

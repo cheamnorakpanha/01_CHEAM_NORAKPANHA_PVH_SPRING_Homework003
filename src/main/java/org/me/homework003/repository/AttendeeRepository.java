@@ -4,6 +4,7 @@ import org.apache.ibatis.annotations.*;
 import org.apache.ibatis.annotations.Mapper;
 import org.me.homework003.model.entity.Attendee;
 import org.me.homework003.model.request.AttendeeRequest;
+import org.me.homework003.model.request.UpdateAttendeeRequest;
 
 import java.util.List;
 
@@ -66,10 +67,9 @@ public interface AttendeeRepository {
     @ResultMap("attendeeMapper")
     @Select("""
             UPDATE attendees
-            SET attendee_name = #{req.attendeeName},
-                email = #{req.email}
+            SET attendee_name = #{req.attendeeName}
             WHERE attendee_id = #{attendeeId}
             RETURNING *
             """)
-    List<Attendee> updateAttendeeById(@Param("attendeeId") Long attendeeId, @Param("req") AttendeeRequest request);
+    List<Attendee> updateAttendeeById(@Param("attendeeId") Long attendeeId, @Param("req") UpdateAttendeeRequest request);
 }

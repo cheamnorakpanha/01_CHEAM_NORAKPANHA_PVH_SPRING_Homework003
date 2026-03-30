@@ -6,6 +6,7 @@ import org.me.homework003.exception.DuplicateResourceException;
 import org.me.homework003.exception.NotFoundException;
 import org.me.homework003.model.entity.Attendee;
 import org.me.homework003.model.request.AttendeeRequest;
+import org.me.homework003.model.request.UpdateAttendeeRequest;
 import org.me.homework003.repository.AttendeeRepository;
 import org.me.homework003.service.AttendeeService;
 import org.springframework.stereotype.Service;
@@ -72,10 +73,10 @@ public class AttendeeServiceImpl implements AttendeeService {
     }
 
     @Override
-    public List<Attendee> updateAttendeeById(Long attendeeId, AttendeeRequest request) {
+    public List<Attendee> updateAttendeeById(Long attendeeId, UpdateAttendeeRequest request) {
         validateAttendeeId(attendeeId);
         validateAttendeeExists(attendeeId);
-        validateDuplicateAttendee(request.getAttendeeName(), request.getEmail(), attendeeId);
+        validateDuplicateAttendeeName(request.getAttendeeName(), attendeeId);
 
         List<Attendee> updated = attendeeRepository.updateAttendeeById(attendeeId, request);
 
@@ -126,6 +127,17 @@ public class AttendeeServiceImpl implements AttendeeService {
         if (duplicateEmail) {
             throw new DuplicateResourceException(
                     "Email already exists",
+                    "http://localhost:8080/errors/duplicate-attendee"
+            );
+        }
+    }
+
+    private void validateDuplicateAttendeeName(String attendeeName, Long attendeeId) {
+        boolean duplicateName = attendeeRepository.existsByAttendeeNameAndAttendeeIdNot(attendeeName, attendeeId);
+
+        if (duplicateName) {
+            throw new DuplicateResourceException(
+                    "Attendee name already exists",
                     "http://localhost:8080/errors/duplicate-attendee"
             );
         }
