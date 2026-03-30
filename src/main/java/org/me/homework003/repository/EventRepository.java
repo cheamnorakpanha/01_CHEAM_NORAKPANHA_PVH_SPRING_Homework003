@@ -29,10 +29,43 @@ public interface EventRepository {
     @ResultMap("eventMapper")
     @Select("""
             INSERT INTO events (event_name, event_date, venue_id)
-            VALUES (#{req.eventName}, #{req.eventDate}, #{req.venue.venueId})
+            VALUES (#{req.eventName}, #{req.eventDate}, #{req.venueId})
             RETURNING *
             """)
     List<Event> createNewEvent(@Param("req") EventRequest request);
+
+    @Select("""
+            SELECT COUNT(*) > 0
+            FROM events
+            WHERE event_name = #{eventName} AND event_date = #{eventDate}
+            """)
+    boolean existsByEventNameAndEventDate(@Param("eventName") String eventName, @Param("eventDate") String eventDate);
+
+    @Select("""
+            SELECT COUNT(*) > 0
+            FROM events
+            WHERE event_name = #{eventName}
+              AND event_date = #{eventDate}
+              AND event_id != #{eventId}
+            """)
+    boolean existsByEventNameAndEventDateAndEventIdNot(@Param("eventName") String eventName,
+                                                       @Param("eventDate") String eventDate,
+                                                       @Param("eventId") Long eventId);
+
+    @Insert({
+            "<script>",
+            "INSERT INTO event_attendee (attendee_id, event_id) VALUES",
+            "<foreach collection='attendeeIds' item='attendeeId' separator=','>",
+            "(#{attendeeId}, #{eventId})",
+            "</foreach>",
+            "</script>"
+    })
+    void insertEventAttendees(@Param("eventId") Long eventId, @Param("attendeeIds") List<Long> attendeeIds);
+
+    @Delete("""
+            DELETE FROM event_attendee WHERE event_id = #{eventId}
+            """)
+    void deleteEventAttendeesByEventId(@Param("eventId") Long eventId);
 
     @ResultMap("eventMapper")
     @Select("""
@@ -45,7 +78,7 @@ public interface EventRepository {
             UPDATE events
             SET event_name = #{req.eventName},
                 event_date = #{req.eventDate},
-                venue_id = #{req.venue.venueId}
+                venue_id = #{req.venueId}
             WHERE event_id = #{eventId}
             RETURNING *
             """)

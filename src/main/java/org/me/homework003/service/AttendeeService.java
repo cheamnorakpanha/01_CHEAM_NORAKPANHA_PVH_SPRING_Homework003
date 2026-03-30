@@ -2,6 +2,7 @@ package org.me.homework003.service;
 
 import org.me.homework003.model.entity.Attendee;
 import org.me.homework003.model.request.AttendeeRequest;
+import org.me.homework003.model.request.UpdateAttendeeRequest;
 
 import java.util.List;
 
@@ -14,5 +15,5 @@ public interface AttendeeService {
 
     List<Attendee> deleteAttendeeById(Long attendeeId);
 
-    List<Attendee> updateAttendeeById(Long attendeeId, AttendeeRequest request);
+    List<Attendee> updateAttendeeById(Long attendeeId, UpdateAttendeeRequest request);
 }

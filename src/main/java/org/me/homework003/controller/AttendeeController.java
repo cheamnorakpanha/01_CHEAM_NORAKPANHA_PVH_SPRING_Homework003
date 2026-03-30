@@ -5,6 +5,7 @@ import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.me.homework003.model.entity.Attendee;
 import org.me.homework003.model.request.AttendeeRequest;
+import org.me.homework003.model.request.UpdateAttendeeRequest;
 import org.me.homework003.model.response.ApiResponse;
 import org.me.homework003.service.AttendeeService;
 import org.springframework.http.HttpStatus;
@@ -77,7 +78,7 @@ public class AttendeeController {
 
     @Operation(summary = "Update attendee by Id")
     @PutMapping("/{attendee-id}")
-    public ResponseEntity<ApiResponse<List<Attendee>>> updateAttendeeById(@PathVariable("attendee-id") Long attendeeId, @Valid @RequestBody AttendeeRequest request) {
+    public ResponseEntity<ApiResponse<List<Attendee>>> updateAttendeeById(@PathVariable("attendee-id") Long attendeeId, @Valid @RequestBody UpdateAttendeeRequest request) {
         ApiResponse<List<Attendee>> response = ApiResponse.<List<Attendee>>builder()
                 .timestamp(Instant.now())
                 .message("Retrieved attendees successfully.")
