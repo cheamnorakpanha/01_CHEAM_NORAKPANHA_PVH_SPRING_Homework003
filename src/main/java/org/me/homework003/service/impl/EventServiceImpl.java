@@ -1,8 +1,7 @@
 package org.me.homework003.service.impl;
 
 import lombok.RequiredArgsConstructor;
-import org.me.homework003.exception.InvalidPaginationException;
-import org.me.homework003.exception.InvalidResourceIdException;
+import org.me.homework003.exception.BadRequestException;
 import org.me.homework003.model.entity.Event;
 import org.me.homework003.model.request.EventRequest;
 import org.me.homework003.repository.EventRepository;
@@ -32,7 +31,7 @@ public class EventServiceImpl implements EventService {
         }
 
         if (!errors.isEmpty()) {
-            throw new InvalidPaginationException(errors);
+            throw new BadRequestException(errors);
         }
 
         int offset = size * (page - 1);
@@ -68,7 +67,7 @@ public class EventServiceImpl implements EventService {
 
     private void validateEventId(Long eventId) {
         if (eventId == null || eventId <= 0) {
-            throw new InvalidResourceIdException(Map.of("eventId", "must be greater than 0"));
+            throw new BadRequestException(Map.of("eventId", "must be greater than 0"));
         }
     }
 }

@@ -1,9 +1,8 @@
 package org.me.homework003.service.impl;
 
 import lombok.RequiredArgsConstructor;
+import org.me.homework003.exception.BadRequestException;
 import org.me.homework003.exception.DuplicateResourceException;
-import org.me.homework003.exception.InvalidPaginationException;
-import org.me.homework003.exception.InvalidResourceIdException;
 import org.me.homework003.exception.NotFoundException;
 import org.me.homework003.model.entity.Venue;
 import org.me.homework003.model.request.VenueRequest;
@@ -34,7 +33,7 @@ public class VenueServiceImpl implements VenueService {
         }
 
         if (!errors.isEmpty()) {
-            throw new InvalidPaginationException(errors);
+            throw new BadRequestException(errors);
         }
 
         int offset = size * (page - 1);
@@ -57,7 +56,7 @@ public class VenueServiceImpl implements VenueService {
     @Override
     public List<Venue> createNewVenue(VenueRequest request) {
         if (venueRepository.existsByVenueName(request.getVenueName())) {
-            throw new DuplicateResourceException("Venue name already exists");
+            throw new DuplicateResourceException("Venue name already exists", "http://localhost:8080/errors/duplicate-venue");
         }
 
         return venueRepository.createNewVenue(request);
@@ -79,7 +78,7 @@ public class VenueServiceImpl implements VenueService {
         validateVenueId(venueId);
 
         if (venueRepository.existsByVenueNameAndVenueIdNot(request.getVenueName(), venueId)) {
-            throw new DuplicateResourceException("Venue name already exists");
+            throw new DuplicateResourceException("Venue name already exists", "http://localhost:8080/errors/duplicate-venue");
         }
 
         List<Venue> updated = venueRepository.updateVenueById(venueId, request);
@@ -92,7 +91,7 @@ public class VenueServiceImpl implements VenueService {
 
     private void validateVenueId(Long venueId) {
         if (venueId == null || venueId <= 0) {
-            throw new InvalidResourceIdException(Map.of("venueId", "must be greater than 0"));
+            throw new BadRequestException(Map.of("venueId", "must be greater than 0"));
         }
     }
 }

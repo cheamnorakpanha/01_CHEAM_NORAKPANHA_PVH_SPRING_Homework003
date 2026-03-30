@@ -1,8 +1,8 @@
 package org.me.homework003.service.impl;
 
 import lombok.RequiredArgsConstructor;
-import org.me.homework003.exception.InvalidPaginationException;
-import org.me.homework003.exception.InvalidResourceIdException;
+import org.me.homework003.exception.BadRequestException;
+import org.me.homework003.exception.DuplicateResourceException;
 import org.me.homework003.exception.NotFoundException;
 import org.me.homework003.model.entity.Attendee;
 import org.me.homework003.model.request.AttendeeRequest;
@@ -32,7 +32,7 @@ public class AttendeeServiceImpl implements AttendeeService {
         }
 
         if (!errors.isEmpty()) {
-            throw new InvalidPaginationException(errors);
+            throw new BadRequestException(errors);
         }
 
         int offset = size * (page - 1);
@@ -54,6 +54,8 @@ public class AttendeeServiceImpl implements AttendeeService {
 
     @Override
     public List<Attendee> createNewAttendee(AttendeeRequest request) {
+        validateDuplicateAttendee(request.getAttendeeName(), request.getEmail(), null);
+
         return attendeeRepository.createNewAttendee(request);
     }
 
@@ -72,6 +74,8 @@ public class AttendeeServiceImpl implements AttendeeService {
     @Override
     public List<Attendee> updateAttendeeById(Long attendeeId, AttendeeRequest request) {
         validateAttendeeId(attendeeId);
+        validateAttendeeExists(attendeeId);
+        validateDuplicateAttendee(request.getAttendeeName(), request.getEmail(), attendeeId);
 
         List<Attendee> updated = attendeeRepository.updateAttendeeById(attendeeId, request);
 
@@ -83,7 +87,47 @@ public class AttendeeServiceImpl implements AttendeeService {
 
     private void validateAttendeeId(Long attendeeId) {
         if (attendeeId == null || attendeeId <= 0) {
-            throw new InvalidResourceIdException(Map.of("attendeeId", "must be greater than 0"));
+            throw new BadRequestException(Map.of("attendeeId", "must be greater than 0"));
+        }
+    }
+
+    private void validateAttendeeExists(Long attendeeId) {
+        if (attendeeRepository.getAllAttendeesById(attendeeId).isEmpty()) {
+            throw new NotFoundException("Attendee with id " + attendeeId + " not found.");
+        }
+    }
+
+    private void validateDuplicateAttendee(String attendeeName, String email, Long attendeeId) {
+        boolean duplicateName;
+        boolean duplicateEmail;
+
+        if (attendeeId == null) {
+            duplicateName = attendeeRepository.existsByAttendeeName(attendeeName);
+            duplicateEmail = attendeeRepository.existsByEmail(email);
+        } else {
+            duplicateName = attendeeRepository.existsByAttendeeNameAndAttendeeIdNot(attendeeName, attendeeId);
+            duplicateEmail = attendeeRepository.existsByEmailAndAttendeeIdNot(email, attendeeId);
+        }
+
+        if (duplicateName && duplicateEmail) {
+            throw new DuplicateResourceException(
+                    "Attendee name and email already exist",
+                    "http://localhost:8080/errors/duplicate-attendee"
+            );
+        }
+
+        if (duplicateName) {
+            throw new DuplicateResourceException(
+                    "Attendee name already exists",
+                    "http://localhost:8080/errors/duplicate-attendee"
+            );
+        }
+
+        if (duplicateEmail) {
+            throw new DuplicateResourceException(
+                    "Email already exists",
+                    "http://localhost:8080/errors/duplicate-attendee"
+            );
         }
     }
 }
