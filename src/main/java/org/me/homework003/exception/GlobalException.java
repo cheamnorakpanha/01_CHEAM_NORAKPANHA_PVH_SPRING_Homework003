@@ -9,14 +9,45 @@ import org.springframework.web.bind.annotation.RestControllerAdvice;
 import org.springframework.web.method.annotation.HandlerMethodValidationException;
 
 import java.time.Instant;
+import java.net.URI;
 import java.util.HashMap;
 import java.util.Map;
 
 @RestControllerAdvice
 public class GlobalException {
+
+    @ExceptionHandler(InvalidResourceIdException.class)
+    public ProblemDetail handleInvalidResourceIdException(InvalidResourceIdException e) {
+        ProblemDetail problemDetail = ProblemDetail.forStatus(HttpStatus.BAD_REQUEST);
+        problemDetail.setTitle("Bad Request");
+        problemDetail.setProperty("timestamp", Instant.now());
+        problemDetail.setProperty("errors", e.getErrors());
+        return problemDetail;
+    }
+
+    @ExceptionHandler(DuplicateResourceException.class)
+    public ProblemDetail handleDuplicateResourceException(DuplicateResourceException e) {
+        ProblemDetail problemDetail = ProblemDetail.forStatusAndDetail(HttpStatus.CONFLICT, e.getMessage());
+        problemDetail.setTitle("Conflict");
+        problemDetail.setType(URI.create("http://localhost:8080/errors/duplicate-venue"));
+        problemDetail.setProperty("timestamp", Instant.now());
+        return problemDetail;
+    }
+
+    @ExceptionHandler(InvalidPaginationException.class)
+    public ProblemDetail handleInvalidPaginationException(InvalidPaginationException e) {
+        ProblemDetail problemDetail = ProblemDetail.forStatus(HttpStatus.BAD_REQUEST);
+        problemDetail.setTitle("Bad Request");
+        problemDetail.setProperty("timestamp", Instant.now());
+        problemDetail.setProperty("errors", e.getErrors());
+        return problemDetail;
+    }
+
     @ExceptionHandler(NotFoundException.class)
     public ProblemDetail handleNotFoundException(NotFoundException e) {
         ProblemDetail problemDetail = ProblemDetail.forStatusAndDetail(HttpStatus.NOT_FOUND, e.getMessage());
+        problemDetail.setTitle("Not Found");
+        problemDetail.setType(URI.create("http://localhost:8080/errors/not-found"));
         problemDetail.setProperty("timestamp", Instant.now());
         return problemDetail;
     }
@@ -34,6 +65,8 @@ public class GlobalException {
         }
 
         // Add errors to ProblemDetail as extra properties
+        problemDetail.setTitle("Bad Request");
+        problemDetail.setProperty("timestamp", Instant.now());
         problemDetail.setProperty("errors", errors);
         return problemDetail;
     }

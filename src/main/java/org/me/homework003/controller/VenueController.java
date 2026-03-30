@@ -1,6 +1,7 @@
 package org.me.homework003.controller;
 
 import io.swagger.v3.oas.annotations.Operation;
+import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.me.homework003.model.entity.Venue;
 import org.me.homework003.model.request.VenueRequest;
@@ -26,7 +27,7 @@ public class VenueController {
         ApiResponse<List<Venue>> response = ApiResponse.<List<Venue>>builder()
                 .timestamp(Instant.now())
                 .message("Retrieved venues successfully.")
-                .status(HttpStatus.OK)
+                .status(HttpStatus.OK.getReasonPhrase())
                 .payload(venueService.getAllVenues(page, size))
                 .build();
 
@@ -39,7 +40,7 @@ public class VenueController {
         ApiResponse<List<Venue>> response = ApiResponse.<List<Venue>>builder()
                 .timestamp(Instant.now())
                 .message("Retrieved venues successfully.")
-                .status(HttpStatus.OK)
+                .status(HttpStatus.OK.getReasonPhrase())
                 .payload(venueService.getAllVenuesById(venueId))
                 .build();
 
@@ -48,11 +49,11 @@ public class VenueController {
 
     @Operation(summary = "Create a new venue")
     @PostMapping
-    public ResponseEntity<ApiResponse<List<Venue>>> createNewVenue(@RequestBody VenueRequest request) {
+    public ResponseEntity<ApiResponse<List<Venue>>> createNewVenue(@Valid @RequestBody VenueRequest request) {
         ApiResponse<List<Venue>> response = ApiResponse.<List<Venue>>builder()
                 .timestamp(Instant.now())
                 .message("Retrieved venues successfully.")
-                .status(HttpStatus.OK)
+                .status(HttpStatus.OK.getReasonPhrase())
                 .payload(venueService.createNewVenue(request))
                 .build();
 
@@ -65,7 +66,7 @@ public class VenueController {
         ApiResponse<List<Venue>> response = ApiResponse.<List<Venue>>builder()
                 .timestamp(Instant.now())
                 .message("Retrieved venues successfully.")
-                .status(HttpStatus.OK)
+                .status(HttpStatus.OK.getReasonPhrase())
                 .payload(venueService.deleteVenueById(venueId))
                 .build();
 
@@ -74,11 +75,11 @@ public class VenueController {
 
     @Operation(summary = "Update venue by Id")
     @PutMapping("/{venue-id}")
-    public ResponseEntity<ApiResponse<List<Venue>>> updateVenueById(@PathVariable("venue-id") Long venueId, @RequestBody VenueRequest request) {
+    public ResponseEntity<ApiResponse<List<Venue>>> updateVenueById(@PathVariable("venue-id") Long venueId, @Valid @RequestBody VenueRequest request) {
         ApiResponse<List<Venue>> response = ApiResponse.<List<Venue>>builder()
                 .timestamp(Instant.now())
                 .message("Retrieved venues successfully.")
-                .status(HttpStatus.OK)
+                .status(HttpStatus.OK.getReasonPhrase())
                 .payload(venueService.updateVenueById(venueId, request))
                 .build();
 
